@@ -1,0 +1,18 @@
+[submodule "src/test/resources/projects/serenity-core"]
+	path = src/test/resources/projects/serenity-core
+	url = git@github.com:serenity-bdd/serenity-core.git
+[submodule "src/test/resources/projects/serenity-test-projects"]
+	path = src/test/resources/projects/serenity-test-projects
+	url = git@github.com:serenity-bdd/serenity-test-projects.git
+[submodule "src/test/resources/projects/serenity-jbehave"]
+	path = src/test/resources/projects/serenity-jbehave
+	url = git@github.com:serenity-bdd/serenity-jbehave.git
+[submodule "src/test/resources/projects/serenity-cucumber"]
+	path = src/test/resources/projects/serenity-cucumber
+	url = git@github.com:serenity-bdd/serenity-cucumber.git
+[submodule "src/test/resources/projects/serenity-maven-plugin"]
+	path = src/test/resources/projects/serenity-maven-plugin
+	url = git@github.com:serenity-bdd/serenity-maven-plugin.git
+[submodule "src/test/resources/projects/serenity-jira"]
+	path = src/test/resources/projects/serenity-jira
+	url = git@github.com:serenity-bdd/serenity-jira.git
