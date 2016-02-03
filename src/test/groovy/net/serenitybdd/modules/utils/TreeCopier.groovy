@@ -30,7 +30,9 @@ class TreeCopier implements FileVisitor<Path> {
 
     @Override
     def FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
-
+        if(dir.getFileName().startsWith(".git")){
+            return FileVisitResult.SKIP_SUBTREE;
+        }
         Path newdir = target.resolve(source.relativize(dir));
         try {
             Files.copy(dir, newdir, StandardCopyOption.REPLACE_EXISTING);
