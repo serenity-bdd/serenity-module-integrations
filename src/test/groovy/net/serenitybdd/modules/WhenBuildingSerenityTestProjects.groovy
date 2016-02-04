@@ -9,6 +9,7 @@ import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
 
+import static org.gradle.testkit.runner.TaskOutcome.FAILED
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
 /**
@@ -23,16 +24,16 @@ class WhenBuildingSerenityTestProjects extends Specification {
 
     def "clean test install should execute successfully for serenityTestProject"() {
         given:
-        def project = new ProjectBuildHelper(project: "serenity-test-projects").prepareProject(temporary.getRoot())
-        def version = ProjectDependencyHelper.publish("serenity-core", temporary.getRoot())
-        new BuildScriptHelper(project: project).updateVersionOfSerenityCore(version)
+            def project = new ProjectBuildHelper(project: "serenity-test-projects").prepareProject(temporary.getRoot())
+            def version = ProjectDependencyHelper.publish("serenity-core", temporary.getRoot())
+            new BuildScriptHelper(project: project).updateVersionOfSerenityCore(version)
         when:
-        def result = GradleRunner.create().forwardOutput()
+            def result = GradleRunner.create().forwardOutput()
                 .withProjectDir(project.toFile())
                 .withArguments('clean', 'test')
                 .build()
 
         then:
-        result.tasks.each { it.outcome == SUCCESS }
+            result.tasks.findAll({ it.outcome == FAILED }).size() == 0
     }
 }

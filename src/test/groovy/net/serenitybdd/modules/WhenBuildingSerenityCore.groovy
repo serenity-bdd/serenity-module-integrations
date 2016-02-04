@@ -13,19 +13,16 @@ public class WhenBuildingSerenityCore extends Specification {
     @Rule
     final TemporaryFolder temporary = new TemporaryFolder()
 
-    def setup() {
-    }
-
-    @Ignore
     def "clean test integrationTests install should execute successfully for serenity-core"() {
         given:
-        def core = new ProjectBuildHelper(project: "serenity-core").prepareProject(temporary.getRoot())
+            def core = new ProjectBuildHelper(project: "serenity-core").prepareProject(temporary.getRoot())
         when:
-        def result = GradleRunner.create().forwardOutput()
+            def result = GradleRunner.create().forwardOutput()
                 .withProjectDir(core.toFile())
-                .withArguments('clean', 'test', "integrationTests", 'install')
+                .withArguments(
+                'clean', 'test', "integrationTests", 'install')
                 .build()
         then:
-        result.tasks.each { it.outcome == SUCCESS }
+            result.tasks.findAll({ it.outcome == FAILED }).size() == 0
     }
 }
