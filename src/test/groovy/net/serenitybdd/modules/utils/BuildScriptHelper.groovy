@@ -16,7 +16,7 @@ class BuildScriptHelper {
         if (!project) {
             throw new IllegalArgumentException("Project should be specified")
         }
-        def File buildFile = new File(project,"build.gradle")
+        def File buildFile = new File(project, "build.gradle")
         rewriteLines(buildFile, ["pom.withXml":
                                      "println \"Publishing updated to \$project.name:\$project.group:$version\"\n"
                                          + "groupId \"\$project.group\"\n"
@@ -30,9 +30,12 @@ class BuildScriptHelper {
         if (!project) {
             throw new IllegalArgumentException("Project should be specified")
         }
-        def File buildFile = new File(project,"build.gradle")
-        rewriteLines(buildFile, ["\${serenityCoreVersion}"        : "$version",
-                                 "\${serenityGradlePluginVersion}": "$version"])
+        def File buildFile = new File(project, "build.gradle")
+        rewriteLines(buildFile, ["\${serenityCoreVersion}"                : "$version",
+                                 "\${project.serenityCoreVersion}"        : "$version",
+                                 "\${serenityGradlePluginVersion}"        : "$version",
+                                 "\${project.serenityGradlePluginVersion}": "$version"
+        ])
         this
     }
 
@@ -40,7 +43,7 @@ class BuildScriptHelper {
         if (!project) {
             throw new IllegalArgumentException("Project should be specified")
         }
-        def File buildFile = new File(project,"build.gradle")
+        def File buildFile = new File(project, "build.gradle")
         rewriteLines(buildFile, ["\${serenityCucumberVersion}": "$version"])
         this
     }
@@ -49,14 +52,14 @@ class BuildScriptHelper {
         if (!project) {
             throw new IllegalArgumentException("Project should be specified")
         }
-        def File buildFile = new File(project,"build.gradle")
+        def File buildFile = new File(project, "build.gradle")
         rewriteLines(buildFile, ["\${serenityJBehaveVersion}": "$version"])
         this
     }
 
 
     def private rewriteLines(def File buildFile, def Map<String, String> updates, def keepSource = false) {
-        def File resultFile = new File(project,"updated.build.gradle")
+        def File resultFile = new File(project, "updated.build.gradle")
 
         if (resultFile.exists()) {
             resultFile.delete()
@@ -77,6 +80,6 @@ class BuildScriptHelper {
                 w.println(line)
             }
         }
-        Files.move(resultFile.toPath(), buildFile.toPath(), StandardCopyOption.REPLACE_EXISTING)
+        Files.copy(resultFile.toPath(), buildFile.toPath(), StandardCopyOption.REPLACE_EXISTING)
     }
 }

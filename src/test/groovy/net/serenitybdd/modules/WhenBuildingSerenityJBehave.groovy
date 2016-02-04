@@ -22,11 +22,28 @@ class WhenBuildingSerenityJBehave extends Specification {
     @Rule
     final TemporaryFolder temporary = new TemporaryFolder()
 
-    def "clean test integrationTests install should execute successfully for serenity-jbehave"() {
+
+    def "serenity-jbehave tests should work with last changes in serenity modules"() {
         given:
-            def project = new ProjectBuildHelper(project: "serenity-jbehave").prepareProject(temporary.getRoot())
-            def version = ProjectDependencyHelper.publish("serenity-core", temporary.getRoot())
+            def File location = temporary.getRoot()
+            def project = new ProjectBuildHelper(project: "serenity-jbehave").prepareProject(location)
+            def version = ProjectDependencyHelper.publish("serenity-core", location)
             new BuildScriptHelper(project: project).updateVersionOfSerenityCore(version)
+
+        when:
+            def result = GradleRunner.create().forwardOutput()
+                .withProjectDir(project)
+                .withArguments('clean', 'test', 'install')
+                .build()
+
+        then:
+            result.tasks.findAll({ it.outcome == FAILED }).size() == 0
+    }
+
+    def "serenity-jbehave tests should execute successfully with latest published serenity modules"() {
+        given:
+            def File location = temporary.getRoot()
+            def project = new ProjectBuildHelper(project: "serenity-jbehave").prepareProject(location)
         when:
             def result = GradleRunner.create().forwardOutput()
                 .withProjectDir(project)

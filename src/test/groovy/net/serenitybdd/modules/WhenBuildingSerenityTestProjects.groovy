@@ -22,19 +22,20 @@ class WhenBuildingSerenityTestProjects extends Specification {
     @Rule
     final TemporaryFolder temporary = new TemporaryFolder()
 
-    def "clean test install should execute successfully for serenityTestProject"() {
+    def "serenityTestProject tests should work with last changes in serenity modules"() {
         given:
-            def coreVersion = ProjectDependencyHelper.publish("serenity-core", temporary.getRoot())
+            def File location = temporary.getRoot()
+            def coreVersion = ProjectDependencyHelper.publish("serenity-core", location)
 
-            def jbehave = new ProjectBuildHelper(project: "serenity-jbehave").prepareProject(temporary.getRoot())
+            def jbehave = new ProjectBuildHelper(project: "serenity-jbehave").prepareProject(location)
             new BuildScriptHelper(project: jbehave).updateVersionOfSerenityCore(coreVersion)
             def jbehaveVersion = ProjectDependencyHelper.publish(jbehave)
 
-            def cucumber = new ProjectBuildHelper(project: "serenity-cucumber").prepareProject(temporary.getRoot())
+            def cucumber = new ProjectBuildHelper(project: "serenity-cucumber").prepareProject(location)
             new BuildScriptHelper(project: cucumber).updateVersionOfSerenityCore(coreVersion)
             def cucumberVersion = ProjectDependencyHelper.publish(cucumber)
 
-            def project = new ProjectBuildHelper(project: "serenity-test-projects").prepareProject(temporary.getRoot())
+            def project = new ProjectBuildHelper(project: "serenity-test-projects").prepareProject(location)
             new BuildScriptHelper(project: project).updateVersionOfSerenityCore(coreVersion)
                 .updateVersionOfSerenityCucumber(cucumberVersion)
                 .updateVersionOfSerenityJBehave(jbehaveVersion)
