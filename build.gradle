@@ -53,10 +53,10 @@ test {
     testLogging {
         showStandardStreams = true
     }
-    //maxParallelForks = Runtime.runtime.availableProcessors()
+    //maxParallelForks = 2//Runtime.runtime.availableProcessors()
 }
 
 task CopyDeps(type: Copy) {
-    from configurations.testCompile
+    from configurations.runtime + configurations.testCompile
     into project.projectDir.path + "/lib"
 }

@@ -1,12 +1,15 @@
 ## Repository for integration tests between different modules (jBehave,Cucumber and so on)  
 
-This repo is used for testing different modules of Serenity BDD together.
+This project is used for testing different modules of Serenity BDD together.
 
-How build works:
- - build serenity-core and publish artifacts to maven local repository with some predefined version
- - build and test all modules against predefined version
+If this build with tests executed successfully it means: 
+ - build, test, integrationTests, install goals are executed "as-is" with success result for: serenity-core, serenity-jbehave, serenity-cucumber, serenity-maven-plugin, serenity-jira
+ - build, test, integrationTests, install goals are executed with success result for serenity-jbehave, serenity-cucumber, serenity-maven-plugin, serenity-jira using configured serenity-core version
+ - build, test goals are executed goals are executed with success for test projects against configured version of serenity-core, serenity-jbehave, serenity-cucumber, serenity-maven-plugin, serenity-jira 
 
-As result all submodules will be tested agains one version to be sure that all works fine. 
+If this build failed - you can find gradle report with exceptions and descriptions for each failed module/test
+
+As result all submodules will be tested against one version to be sure that all works fine. 
 
 This project contains git submodules in last working-well-together version:
 
