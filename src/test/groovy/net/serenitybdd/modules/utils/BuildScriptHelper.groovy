@@ -10,18 +10,18 @@ import java.nio.file.StandardCopyOption
  * Time: 6:39 AM
  */
 class BuildScriptHelper {
-    def Path project
+    def File project
 
     def updateVersionOfResultArtifact(def String version) {
         if (!project) {
             throw new IllegalArgumentException("Project should be specified")
         }
-        def Path buildFile = project.resolve("build.gradle")
+        def File buildFile = new File(project,"build.gradle")
         rewriteLines(buildFile, ["pom.withXml":
-                                         "println \"Publishing updated to \$project.name:\$project.group:$version\"\n"
-                                                 + "groupId \"\$project.group\"\n"
-                                                 + "artifactId \"\$project.name\"\n"
-                                                 + "version \"$version\"\n"
+                                     "println \"Publishing updated to \$project.name:\$project.group:$version\"\n"
+                                         + "groupId \"\$project.group\"\n"
+                                         + "artifactId \"\$project.name\"\n"
+                                         + "version \"$version\"\n"
         ], true)
         this
     }
@@ -30,18 +30,36 @@ class BuildScriptHelper {
         if (!project) {
             throw new IllegalArgumentException("Project should be specified")
         }
-        def Path buildFile = project.resolve("build.gradle")
-        rewriteLines(buildFile, ["\${serenityCoreVersion}"              : "$version",
+        def File buildFile = new File(project,"build.gradle")
+        rewriteLines(buildFile, ["\${serenityCoreVersion}"        : "$version",
                                  "\${serenityGradlePluginVersion}": "$version"])
         this
     }
 
+    def updateVersionOfSerenityCucumber(def String version) {
+        if (!project) {
+            throw new IllegalArgumentException("Project should be specified")
+        }
+        def File buildFile = new File(project,"build.gradle")
+        rewriteLines(buildFile, ["\${serenityCucumberVersion}": "$version"])
+        this
+    }
 
-    def private rewriteLines(def buildFile, def Map<String, String> updates, def keepSource = false) {
-        def Path resultFile = project.resolve("updated.build.gradle")
+    def updateVersionOfSerenityJBehave(def String version) {
+        if (!project) {
+            throw new IllegalArgumentException("Project should be specified")
+        }
+        def File buildFile = new File(project,"build.gradle")
+        rewriteLines(buildFile, ["\${serenityJBehaveVersion}": "$version"])
+        this
+    }
 
-        if (Files.exists(resultFile)) {
-            Files.delete(resultFile)
+
+    def private rewriteLines(def File buildFile, def Map<String, String> updates, def keepSource = false) {
+        def File resultFile = new File(project,"updated.build.gradle")
+
+        if (resultFile.exists()) {
+            resultFile.delete()
         }
 
         resultFile.withWriter { w ->
@@ -59,6 +77,6 @@ class BuildScriptHelper {
                 w.println(line)
             }
         }
-        Files.move(resultFile, buildFile, StandardCopyOption.REPLACE_EXISTING)
+        Files.move(resultFile.toPath(), buildFile.toPath(), StandardCopyOption.REPLACE_EXISTING)
     }
 }

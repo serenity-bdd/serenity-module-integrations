@@ -18,7 +18,7 @@ public class WhenBuildingSerenityCore extends Specification {
             def core = new ProjectBuildHelper(project: "serenity-core").prepareProject(temporary.getRoot())
         when:
             def result = GradleRunner.create().forwardOutput()
-                .withProjectDir(core.toFile())
+                .withProjectDir(core)
                 .withArguments(
                 'clean', 'test', "integrationTests", 'install')
                 .build()

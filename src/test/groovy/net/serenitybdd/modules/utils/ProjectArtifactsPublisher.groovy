@@ -11,12 +11,12 @@ import java.nio.file.Path
  * Time: 8:40 PM
  */
 class ProjectArtifactsPublisher {
-    def Path project
+    def File project
 
     def boolean publishArtifacts() {
         def publish = "publishToMavenLocal"
         GradleRunner.create().forwardOutput()
-                .withProjectDir(project.toFile())
+                .withProjectDir(project)
                 .withArguments('clean', "-xtest", publish)
                 .build().taskPaths(TaskOutcome.FAILED).size() == 0
     }
