@@ -29,7 +29,7 @@ class WhenBuildingSerenityJBehave extends Specification {
             new BuildScriptHelper(project: project).updateVersionOfSerenityCore(version)
         when:
             def result = GradleRunner.create().forwardOutput()
-                .withProjectDir(project.toFile())
+                .withProjectDir(project)
                 .withArguments('clean', 'test', 'install')
                 .build()
 

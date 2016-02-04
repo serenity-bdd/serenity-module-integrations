@@ -4,10 +4,12 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.nio.file.FileAlreadyExistsException
 import java.nio.file.FileSystemLoopException
+import java.nio.file.FileSystems
 import java.nio.file.FileVisitResult
 import java.nio.file.FileVisitor
 import java.nio.file.Files
 import java.nio.file.Path
+import java.nio.file.PathMatcher
 import java.nio.file.StandardCopyOption
 import java.nio.file.attribute.BasicFileAttributes
 import java.nio.file.attribute.FileTime
@@ -18,7 +20,9 @@ import java.nio.file.attribute.FileTime
  * Time: 8:39 PM
  */
 class TreeCopier implements FileVisitor<Path> {
+
     private static final Logger log = LoggerFactory.getLogger(TreeCopier.class);
+    private static final PathMatcher jars = FileSystems.getDefault().getPathMatcher("glob:.jar");
 
     private final Path source;
     private final Path target;
@@ -30,7 +34,7 @@ class TreeCopier implements FileVisitor<Path> {
 
     @Override
     def FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
-        if(dir.getFileName().startsWith(".git")){
+        if (dir.getFileName().startsWith(".git")) {
             return FileVisitResult.SKIP_SUBTREE;
         }
         Path newdir = target.resolve(source.relativize(dir));
@@ -47,7 +51,9 @@ class TreeCopier implements FileVisitor<Path> {
 
     @Override
     def FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
-        copyFile(file, target.resolve(source.relativize(file)));
+        if (!jars.matches(file)) {
+            copyFile(file, target.resolve(source.relativize(file)));
+        }
         return FileVisitResult.CONTINUE;
     }
 
@@ -75,7 +81,7 @@ class TreeCopier implements FileVisitor<Path> {
         return FileVisitResult.CONTINUE;
     }
 
-    def void copyFile(Path source, Path target) {
+    def private static copyFile(Path source, Path target) {
         try {
             Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException x) {

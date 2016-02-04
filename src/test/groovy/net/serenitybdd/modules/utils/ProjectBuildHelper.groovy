@@ -15,7 +15,7 @@ public class ProjectBuildHelper {
 
     def String project
 
-    def public Path prepareProject(def File destination) {
+    def public File prepareProject(def File destination) {
         final def projectDir = FileSystemUtils.getResourceAsFile("projects/$project");
         if (!destination.exists()) {
             destination.mkdirs()
@@ -27,6 +27,6 @@ public class ProjectBuildHelper {
         EnumSet<FileVisitOption> options = EnumSet.of(FileVisitOption.FOLLOW_LINKS);
         TreeCopier copier = new TreeCopier(projectDir.toPath(), destination.toPath());
         Files.walkFileTree(projectDir.toPath(), options, Integer.MAX_VALUE, copier);
-        destination.toPath()
+        destination
     }
 }
