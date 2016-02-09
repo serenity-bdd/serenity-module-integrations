@@ -48,9 +48,6 @@ Test contains two steps:
 This test contains some example projects that should be build with serenity and aggregation reports should be created. They are real projects, with real tests. After build finished output is checked if it is the same as expected. To achieve this serenity-core builds without tests and published to local maven repo with  
 
 
-
-
-
 ## Workflows to work with this project
 
 ### Update all serenity-modules to last version
@@ -90,9 +87,10 @@ For now we have serenity-core/smoke-test, and it already merged in this reposito
 In this project defined serenity-test-projects - it is projects, that contains smoke and integration tests for serenity-core, serenity-jbehave, serenity-cucumber, serenity-gradle-plugin, serenity-manve-plugin, etc.  
  
 To build only smoke-test with latest version (latest commit in master) of serenityc-core serenity modules you should:
-1) clone this repo to some folder
-2) update all submodules to last version
-3) run test only of class WhenBuildingSerenityTestProjects
+
+ 1. clone this repo to some folder
+ 2. update all submodules to last version
+ 3. run test only of class WhenBuildingSerenityTestProjects
 
 Don't worry about any serenity module versions in build scripts - they will be updated during build process. 
 In some nearest future all reports will be checked as well (all statistics in reports) - for now this build will success only if all test projects will execute without any fail.
