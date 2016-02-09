@@ -43,7 +43,7 @@ class WhenBuildingSerenityJIRA extends Specification {
         when:
             def result = GradleRunner.create().forwardOutput()
                 .withProjectDir(project)
-                .withArguments('clean', 'test', 'install')
+                .withArguments('clean', 'test', 'integrationTests', 'install')
                 .build()
 
         then:
