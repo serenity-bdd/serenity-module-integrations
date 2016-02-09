@@ -112,6 +112,10 @@ git submodule foreach git checkout master -f
 ./gradlew clean test -Dtest.single=WhenBuildingSerenityTestProjects
 ```
 
+## Next goals
+Build test projects using mvn:
+using maven api execute projects with maven to check how serenity-maven-plugin works using [maven-invoker](http://maven.apache.org/shared/maven-invoker/usage.html)
+
 
     
     
