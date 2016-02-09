@@ -42,7 +42,7 @@ class WhenBuildingSerenityTestProjects extends Specification {
         when:
             def result = GradleRunner.create().forwardOutput()
                 .withProjectDir(project)
-                .withArguments('clean', 'test')
+                .withArguments('clean', 'test', 'aggregate')
                 .build()
         then:
             result.tasks.findAll({ it.outcome == FAILED }).size() == 0
