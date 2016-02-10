@@ -4,10 +4,16 @@ import net.serenitybdd.modules.utils.BuildScriptHelper
 import net.serenitybdd.modules.utils.ProjectArtifactsPublisher
 import net.serenitybdd.modules.utils.ProjectBuildHelper
 import net.serenitybdd.modules.utils.ProjectDependencyHelper
+import net.serenitybdd.modules.utils.TestThreadExecutorService
+import net.thucydides.core.reports.MultithreadExecutorServiceProvider
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
+
+import java.util.concurrent.Callable
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.ThreadPoolExecutor
 
 import static org.gradle.testkit.runner.TaskOutcome.FAILED
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
@@ -24,21 +30,48 @@ class WhenBuildingSerenityTestProjects extends Specification {
 
     def "serenityTestProject tests should work with last changes in serenity modules"() {
         given:
-            def File location = temporary.getRoot()
+            def File location = new File(".")//temporary.getRoot()
             def coreVersion = ProjectDependencyHelper.publish("serenity-core", location)
 
-            def jbehave = new ProjectBuildHelper(project: "serenity-jbehave").prepareProject(location)
-            new BuildScriptHelper(project: jbehave).updateVersionOfSerenityCore(coreVersion)
-            def jbehaveVersion = ProjectDependencyHelper.publish(jbehave)
+            def ExecutorService service = new TestThreadExecutorService().getExecutorService();
+            def jbehaveFeature = service.submit(new Callable() {
+                @Override
+                String call() throws Exception {
+                    def jbehave = new ProjectBuildHelper(project: "serenity-jbehave").prepareProject(location)
+                    new BuildScriptHelper(project: jbehave).updateVersionOfSerenityCore(coreVersion)
+                    return ProjectDependencyHelper.publish(jbehave)
+                }
+            })
 
-            def cucumber = new ProjectBuildHelper(project: "serenity-cucumber").prepareProject(location)
-            new BuildScriptHelper(project: cucumber).updateVersionOfSerenityCore(coreVersion)
-            def cucumberVersion = ProjectDependencyHelper.publish(cucumber)
+            def cucumberFeature = service.submit(new Callable() {
+                @Override
+                String call() throws Exception {
+                    def cucumber = new ProjectBuildHelper(project: "serenity-cucumber").prepareProject(location)
+                    new BuildScriptHelper(project: cucumber).updateVersionOfSerenityCore(coreVersion)
+                    return ProjectDependencyHelper.publish(cucumber)
+                }
+            })
 
-            def project = new ProjectBuildHelper(project: "serenity-test-projects").prepareProject(location)
+            def mavenFeature = service.submit(new Callable() {
+                @Override
+                String call() throws Exception {
+                    def maven = new ProjectBuildHelper(project: "serenity-maven-plugin").prepareProject(location)
+                    new BuildScriptHelper(project: maven).updateVersionOfSerenityCore(coreVersion)
+                    def mavenPluginVersion = ProjectDependencyHelper.publish(maven)
+                }
+            })
+
+            def testProject = service.submit(new Callable() {
+                @Override
+                File call() throws Exception {
+                    new ProjectBuildHelper(project: "serenity-test-projects").prepareProject(location)
+                }
+            })
+
+            def project = (File)testProject.get()
             new BuildScriptHelper(project: project).updateVersionOfSerenityCore(coreVersion)
-                .updateVersionOfSerenityCucumber(cucumberVersion)
-                .updateVersionOfSerenityJBehave(jbehaveVersion)
+                .updateVersionOfSerenityCucumber((String)cucumberFeature.get())
+                .updateVersionOfSerenityJBehave((String)jbehaveFeature.get())
         when:
             def result = GradleRunner.create().forwardOutput()
                 .withProjectDir(project)

@@ -23,6 +23,10 @@ class BuildScriptHelper {
                                          + "artifactId \"\$project.name\"\n"
                                          + "version \"$version\"\n"
         ], true)
+        rewriteLines(buildFile, ["project.version.toString()":
+                                     "\"$version\""], false)
+        rewriteLines(buildFile, ["<version>\${version}</version>":
+                                     "<version>${version}</version>"], false)
         this
     }
 
