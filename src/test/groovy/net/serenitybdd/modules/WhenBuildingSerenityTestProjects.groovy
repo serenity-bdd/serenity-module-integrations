@@ -30,7 +30,7 @@ class WhenBuildingSerenityTestProjects extends Specification {
 
     def "serenityTestProject tests should work with last changes in serenity modules"() {
         given:
-            def File location = new File(".")//temporary.getRoot()
+            def File location = temporary.getRoot()
             def coreVersion = ProjectDependencyHelper.publish("serenity-core", location)
 
             def ExecutorService service = new TestThreadExecutorService().getExecutorService();
