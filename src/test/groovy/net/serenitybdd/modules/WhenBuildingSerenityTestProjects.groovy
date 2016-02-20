@@ -68,10 +68,10 @@ class WhenBuildingSerenityTestProjects extends Specification {
                 }
             })
 
-            def project = (File)testProject.get()
+            def project = (File) testProject.get()
             new BuildScriptHelper(project: project).updateVersionOfSerenityCore(coreVersion)
-                .updateVersionOfSerenityCucumber((String)cucumberFeature.get())
-                .updateVersionOfSerenityJBehave((String)jbehaveFeature.get())
+                .updateVersionOfSerenityCucumber((String) cucumberFeature.get())
+                .updateVersionOfSerenityJBehave((String) jbehaveFeature.get())
         when:
             def result = GradleRunner.create().forwardOutput()
                 .withProjectDir(project)
