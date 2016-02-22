@@ -10,6 +10,7 @@ import spock.lang.Specification
 
 import static org.gradle.testkit.runner.TaskOutcome.FAILED
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
+import static net.serenitybdd.modules.utils.Projects.*
 
 /**
  * User: YamStranger
@@ -24,8 +25,8 @@ class WhenBuildingSerenityJIRA extends Specification {
     def "serenity-jira tests should work with last changes in serenity modules"() {
         given:
             def File location = temporary.getRoot()
-            def project = new ProjectBuildHelper(project: "serenity-jira").prepareProject(location)
-            def version = ProjectDependencyHelper.publish("serenity-core", location)
+            def project = new ProjectBuildHelper(project: SERENITY_JIRA).prepareProject(location)
+            def version = ProjectDependencyHelper.publish(SERENITY_CORE, location)
             new BuildScriptHelper(project: project).updateVersionOfSerenityCore(version)
         when:
             def result = GradleRunner.create().forwardOutput()
@@ -39,7 +40,7 @@ class WhenBuildingSerenityJIRA extends Specification {
     def "serenity-jira tests should execute successfully with latest published serenity modules"() {
         given:
             def File location = temporary.getRoot()
-            def project = new ProjectBuildHelper(project: "serenity-jira").prepareProject(location)
+            def project = new ProjectBuildHelper(project: SERENITY_JIRA).prepareProject(location)
         when:
             def result = GradleRunner.create().forwardOutput()
                 .withProjectDir(project)
