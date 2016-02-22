@@ -38,7 +38,11 @@ class BuildScriptHelper {
         rewriteLines(buildFile, ["\${serenityCoreVersion}"                : "$version",
                                  "\${project.serenityCoreVersion}"        : "$version",
                                  "\${serenityGradlePluginVersion}"        : "$version",
-                                 "\${project.serenityGradlePluginVersion}": "$version"
+                                 "\${project.serenityGradlePluginVersion}": "$version",
+                                 "\$serenityCoreVersion"                  : "$version",
+                                 "\$project.serenityCoreVersion"          : "$version",
+                                 "\$serenityGradlePluginVersion"          : "$version",
+                                 "\$project.serenityGradlePluginVersion"  : "$version"
         ])
         this
     }
@@ -48,7 +52,8 @@ class BuildScriptHelper {
             throw new IllegalArgumentException("Project should be specified")
         }
         def File buildFile = new File(project, "build.gradle")
-        rewriteLines(buildFile, ["\${serenityCucumberVersion}": "$version"])
+        rewriteLines(buildFile, ["\${serenityCucumberVersion}": "$version",
+                                 "\$serenityCucumberVersion"  : "$version"])
         this
     }
 
@@ -57,7 +62,8 @@ class BuildScriptHelper {
             throw new IllegalArgumentException("Project should be specified")
         }
         def File buildFile = new File(project, "build.gradle")
-        rewriteLines(buildFile, ["\${serenityJBehaveVersion}": "$version"])
+        rewriteLines(buildFile, ["\${serenityJBehaveVersion}": "$version",
+                                 "\$serenityJBehaveVersion"  : "$version"])
         this
     }
 

@@ -13,7 +13,9 @@ enum Projects {
     SERENITY_CORE("serenity-core"),
     SERENITY_JIRA("serenity-jira"),
     SERENITY_MAVEN_PLUGIN("serenity-maven-plugin"),
-    WEB_TODOMVC_TESTS("$SERENITY_TEST_PROJECTS/web-todomvc-tests")
+    WEB_TODOMVC_TESTS("$SERENITY_TEST_PROJECTS/web-todomvc-tests"),
+    JBEHAVE_TAGS("$SERENITY_TEST_PROJECTS/jbehave-tags"),
+    JBEHAVE_IN_PARALLEL("$SERENITY_TEST_PROJECTS/jbehave-in-parallel")
 
     def final private String name
 
