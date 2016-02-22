@@ -22,6 +22,7 @@ class ProjectDependencyHelper {
     def static String publish(def String project, def File folder) {
         synchronized (published) {
             if (published.containsKey(project)) {
+                println "$project alredy published for version ${published.get(project)}"
                 return published.get(project)
             } else {
                 def root = new ProjectBuildHelper(project: project).prepareProject(folder)
@@ -33,21 +34,34 @@ class ProjectDependencyHelper {
         }
     }
 
+    def static String publish(def Projects project, def File folder) {
+        return publish(project.toString(), folder)
+    }
+
     /**
-     * Publish project in this dif, if not published jet.
+     * Publish project in this dir, if not published jet. Accepts closure updates to update project
      * @param project directory where build.gradle is located
      * @return version of published artifact
      */
-    def static String publish(def File project) {
+    def static String publish(def String project, def File location, Closure<BuildScriptHelper>... updates) {
         synchronized (published) {
-            if (published.containsKey(project.getAbsolutePath())) {
+            if (published.containsKey(project)) {
+                println "$project alredy published for version ${published.get(project)}"
                 return published.get(project)
             } else {
-                new BuildScriptHelper(project: project).updateVersionOfResultArtifact(version)
-                Assert.that(new ProjectArtifactsPublisher(project: project).publishArtifacts(), "some task $project not SUCCESS")
-                published.put(project.getAbsolutePath(), version)
+                def root = new ProjectBuildHelper(project: project).prepareProject(location)
+                updates.each { func ->
+                    func(root)
+                }
+                new BuildScriptHelper(project: root).updateVersionOfResultArtifact(version)
+                Assert.that(new ProjectArtifactsPublisher(project: root).publishArtifacts(), "some task $project not SUCCESS")
+                published.put(root.getAbsolutePath(), version)
                 return version
             }
         }
+    }
+
+    def static String publish(def Projects project, def File location, Closure<BuildScriptHelper>... updates) {
+        return publish(project.toString(), location, updates)
     }
 }

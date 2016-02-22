@@ -7,6 +7,7 @@ import spock.lang.Specification
 import static org.gradle.testkit.runner.TaskOutcome.*
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
+import static net.serenitybdd.modules.utils.Projects.*
 
 public class WhenBuildingSerenityCore extends Specification {
 
@@ -16,7 +17,7 @@ public class WhenBuildingSerenityCore extends Specification {
     def "serenity-core tests should build successfully"() {
         given:
             def File location = temporary.getRoot()
-            def core = new ProjectBuildHelper(project: "serenity-core").prepareProject(location)
+            def core = new ProjectBuildHelper(project: SERENITY_CORE).prepareProject(location)
         when:
             def result = GradleRunner.create().forwardOutput()
                 .withProjectDir(core)

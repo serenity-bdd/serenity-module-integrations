@@ -1,5 +1,6 @@
 package net.serenitybdd.modules.utils
 
+import org.apache.commons.io.FileUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.nio.file.FileAlreadyExistsException
@@ -38,6 +39,8 @@ class TreeCopier implements FileVisitor<Path> {
             return FileVisitResult.SKIP_SUBTREE;
         }
         Path newdir = target.resolve(source.relativize(dir));
+        FileUtils.deleteDirectory(newdir.toFile())
+        Files.createDirectories(newdir)
         try {
             Files.copy(dir, newdir, StandardCopyOption.REPLACE_EXISTING);
         } catch (FileAlreadyExistsException x) {

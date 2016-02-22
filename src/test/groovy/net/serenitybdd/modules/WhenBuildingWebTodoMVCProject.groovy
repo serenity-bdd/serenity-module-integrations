@@ -1,70 +1,63 @@
 package net.serenitybdd.modules
 
 import net.serenitybdd.modules.utils.BuildScriptHelper
-import net.serenitybdd.modules.utils.ProjectArtifactsPublisher
+import net.serenitybdd.modules.utils.Project
 import net.serenitybdd.modules.utils.ProjectBuildHelper
 import net.serenitybdd.modules.utils.ProjectDependencyHelper
+import net.serenitybdd.modules.utils.Projects
 import net.serenitybdd.modules.utils.TestThreadExecutorService
-import net.thucydides.core.reports.MultithreadExecutorServiceProvider
+import net.thucydides.core.model.TestOutcome
+import net.thucydides.core.reports.OutcomeFormat
+import net.thucydides.core.reports.TestOutcomeLoader
+import net.thucydides.core.reports.TestOutcomes
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
-
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutorService
-import java.util.concurrent.ThreadPoolExecutor
 
 import static org.gradle.testkit.runner.TaskOutcome.FAILED
-import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
+import static Projects.*
 
 /**
  * User: YamStranger
  * Date: 1/31/16
  * Time: 2:07 AM
  */
-class WhenBuildingSerenityTestProjects extends Specification {
+class WhenBuildingWebTodoMVCProject extends Specification {
 
     @Rule
     final TemporaryFolder temporary = new TemporaryFolder()
 
-    def "serenityTestProject tests should work with last changes in serenity modules"() {
+    def "web-todomvc-tests should be successful with last changes in serenity modules"() {
         given:
             def File location = temporary.getRoot()
-            def coreVersion = ProjectDependencyHelper.publish("serenity-core", location)
+            def coreVersion = ProjectDependencyHelper.publish(SERENITY_CORE, location)
 
             def ExecutorService service = new TestThreadExecutorService().getExecutorService();
             def jbehaveFeature = service.submit(new Callable() {
                 @Override
                 String call() throws Exception {
-                    def jbehave = new ProjectBuildHelper(project: "serenity-jbehave").prepareProject(location)
-                    new BuildScriptHelper(project: jbehave).updateVersionOfSerenityCore(coreVersion)
-                    return ProjectDependencyHelper.publish(jbehave)
+                    ProjectDependencyHelper.publish(SERENITY_JBEHAVE, location, { it ->
+                        new BuildScriptHelper(project: it).updateVersionOfSerenityCore(coreVersion)
+                    })
                 }
             })
 
             def cucumberFeature = service.submit(new Callable() {
                 @Override
                 String call() throws Exception {
-                    def cucumber = new ProjectBuildHelper(project: "serenity-cucumber").prepareProject(location)
-                    new BuildScriptHelper(project: cucumber).updateVersionOfSerenityCore(coreVersion)
-                    return ProjectDependencyHelper.publish(cucumber)
-                }
-            })
-
-            def mavenFeature = service.submit(new Callable() {
-                @Override
-                String call() throws Exception {
-                    def maven = new ProjectBuildHelper(project: "serenity-maven-plugin").prepareProject(location)
-                    new BuildScriptHelper(project: maven).updateVersionOfSerenityCore(coreVersion)
-                    def mavenPluginVersion = ProjectDependencyHelper.publish(maven)
+                    ProjectDependencyHelper.publish(SERENITY_CUCUMBER, location, { it ->
+                        new BuildScriptHelper(project: it).updateVersionOfSerenityCore(coreVersion)
+                    })
                 }
             })
 
             def testProject = service.submit(new Callable() {
                 @Override
                 File call() throws Exception {
-                    new ProjectBuildHelper(project: "serenity-test-projects").prepareProject(location)
+                    new ProjectBuildHelper(project: WEB_TODOMVC_TESTS).prepareProject(location)
                 }
             })
 
