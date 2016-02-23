@@ -70,7 +70,9 @@ class WhenBuildingJBehaveTestsInParallel extends Specification {
                 .resolve("stories")
                 .resolve("single_operations")
                 .resolve("user_can_perform_simple_action_number.story").toFile()
-            generateTestClasses(classFile, story, 100)
+
+            def amount = Runtime.runtime.availableProcessors() * 3
+            generateTestClasses(classFile, story, amount)
             GradleRunner.create().forwardOutput()
                 .withProjectDir(project)
                 .withArguments('clean', 'test', 'aggregate')
@@ -78,7 +80,7 @@ class WhenBuildingJBehaveTestsInParallel extends Specification {
             def output = project.toPath().resolve("target").resolve("site").resolve("serenity").toFile()
             def outcomes = TestOutcomeLoader.loadTestOutcomes().inFormat(OutcomeFormat.JSON).from(output);
         then:
-            outcomes.getTests().size() == (100 + 1)
+            outcomes.getTests().size() == (amount + 1)
     }
 
     private def static generateTestClasses(final File classFile, final File story, final int amount) {
@@ -87,7 +89,7 @@ class WhenBuildingJBehaveTestsInParallel extends Specification {
             def List<String> lines = classFile.readLines("UTF-8")
             createdClass.withWriter { w ->
                 lines.each { line ->
-                    w.write(line.replace("Number extends", "Number${number} extends"))
+                    w.write(line.replace("Number extends", "Number${number} extends") + "\n")
                 }
                 w.flush()
             }
@@ -95,7 +97,7 @@ class WhenBuildingJBehaveTestsInParallel extends Specification {
             lines = story.readLines("UTF-8")
             createdStory.withWriter { w ->
                 lines.each { line ->
-                    w.write(line.replace("scenario number", "scenario number ${number}"))
+                    w.write(line.replace("scenario number", "scenario number ${number}") + "\n")
                 }
                 w.flush()
             }
