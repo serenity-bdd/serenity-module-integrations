@@ -112,6 +112,21 @@ git submodule foreach git checkout master -f
 ./gradlew clean test -Dtest.single=WhenBuildingSerenityTestProjects
 ```
 
+### Run build of test project in particular dir to check results manually
+For now this does not supported - but it can be done by updating one line:
+```
+def File location = temporary.getRoot()
+```
+to 
+```
+def File location = new File("myPath")
+```
+
+As result all modules for this test will be copied to destination folder, and compiled here. For example, if it will be done for WhenBuildingWebTodoMVCProject:
+ - serenity-core will be in folder `myPath/serenity-core`, compiled and published to maven local repository with version X
+ - serenity-jbehave will ne in folder `myPath/serenity-jbehave`, dependency of serenity-core will be updated to version X. Serenity-jbehave will be published to maven local repository with version Y.
+ - web-todomvc-project will be in folder `myPath/web-todomvc-project`, dependency of serenity-core will be updated to version X and serenity-jbehave to version Y. This project will be executed using updated versions, all tests and aggregate gradle goal. Reports will in `myPath/web-todomvc-project/target/serenity/site` as usual.   
+
 ## Next goals
 Build test projects using mvn:
 using maven api execute projects with maven to check how serenity-maven-plugin works using [maven-invoker](http://maven.apache.org/shared/maven-invoker/usage.html)
