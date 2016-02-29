@@ -71,7 +71,10 @@ class WhenBuildingJBehaveTestsInParallel extends Specification {
                 .resolve("single_operations")
                 .resolve("user_can_perform_simple_action_number.story").toFile()
 
-            def amount = Runtime.runtime.availableProcessors() * 3
+            def Integer amount = Runtime.runtime.availableProcessors() / 2
+            if (amount < 1) {
+                amount = 1
+            }
             generateTestClasses(classFile, story, amount)
             GradleRunner.create().forwardOutput()
                 .withProjectDir(project)

@@ -16,7 +16,9 @@ enum Projects {
     WEB_TODOMVC_TESTS("$SERENITY_TEST_PROJECTS/web-todomvc-tests"),
     JBEHAVE_TAGS("$SERENITY_TEST_PROJECTS/jbehave-tags"),
     JBEHAVE_IN_PARALLEL("$SERENITY_TEST_PROJECTS/jbehave-in-parallel"),
-    JUNIT_IN_PARALLEL("$SERENITY_TEST_PROJECTS/junit-in-parallel")
+    JUNIT_IN_PARALLEL("$SERENITY_TEST_PROJECTS/junit-in-parallel"),
+    JBEHAVE_ADVANCED("$SERENITY_TEST_PROJECTS/jbehave-advanced")
+
 
     def final private String name
 

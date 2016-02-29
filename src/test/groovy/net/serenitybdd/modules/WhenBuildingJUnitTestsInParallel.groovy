@@ -28,7 +28,7 @@ class WhenBuildingJUnitTestsInParallel extends Specification {
 
     def "jbeahve module should have ability to work in parallel"() {
         given:
-            def File location = stemporary.getRoot()
+            def File location = temporary.getRoot()
             def coreVersion = ProjectDependencyHelper.publish(SERENITY_CORE, location)
 
             def ExecutorService service = new TestThreadExecutorService().getExecutorService();
@@ -61,7 +61,10 @@ class WhenBuildingJUnitTestsInParallel extends Specification {
                 .resolve("demos")
                 .resolve("actions")
                 .resolve("UserCanPerformSimpleActionNumber.java").toFile()
-            def amount = Runtime.runtime.availableProcessors() * 3
+            def Integer amount = Runtime.runtime.availableProcessors() / 2
+            if (amount < 1) {
+                amount = 1
+            }
             generateTestClasses(classFile, amount)
             GradleRunner.create().forwardOutput()
                 .withProjectDir(project)
