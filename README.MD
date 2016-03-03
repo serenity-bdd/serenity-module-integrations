@@ -65,8 +65,7 @@ if you are working with origin repository
 
 ```
 git pull origin
-git submodule foreach git pull origin
-git submodule foreach git checkout master -f
+git submodule foreach git pull origin master -f
 ```
 
 after this commands, if they are executed successfully all submodules will be on last version. So now build ''' ./gradlew clean build''' will be executed with latest version of all submodules
@@ -100,8 +99,7 @@ all in one script in you have no checkouted project:
 git clone git@github.com:serenity-bdd/serenity-module-integrations.git 
 cd serenity-module-integrations
 git submodule update  --init --recursive
-git submodule foreach git pull origin
-git submodule foreach git checkout master -f
+git submodule foreach git pull origin master -f
 ./gradlew clean test -Dtest.single=WhenBuildingSerenityTestProjects
 ```
 
