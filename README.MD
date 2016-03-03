@@ -65,8 +65,7 @@ if you are working with origin repository
 
 ```
 git pull origin
-git submodule foreach git pull origin
-git submodule foreach git checkout master -f
+git submodule foreach git pull origin master -f
 ```
 
 after this commands, if they are executed successfully all submodules will be on last version. So now build ''' ./gradlew clean build''' will be executed with latest version of all submodules
@@ -95,21 +94,22 @@ To build only smoke-test with latest version (latest commit in master) of sereni
 Don't worry about any serenity module versions in build scripts - they will be updated during build process. 
 In some nearest future all reports will be checked as well (all statistics in reports) - for now this build will success only if all test projects will execute without any fail.
 
-all in one script in you have no checkouted project:
+all in one script if you did not checkout project before:
 ```
 git clone git@github.com:serenity-bdd/serenity-module-integrations.git 
 cd serenity-module-integrations
 git submodule update  --init --recursive
-git submodule foreach git pull origin
-git submodule foreach git checkout master -f
-./gradlew clean test -Dtest.single=WhenBuildingSerenityTestProjects
+git submodule foreach git pull origin master -f
+./gradlew clean test -Dtest.single=WhenBuildingWebTodoMVCProject
 ```
 
 all in one script in you have checkouted project, should be executed from project dir :
 ```
-git submodule foreach git pull origin
+git checkout master -f
 git submodule foreach git checkout master -f
-./gradlew clean test -Dtest.single=WhenBuildingSerenityTestProjects
+git pull origin master -f
+git submodule foreach git pull origin master -f
+./gradlew clean test -Dtest.single=WhenBuildingWebTodoMVCProject
 ```
 
 ### Run build of test project in particular dir to check results manually
